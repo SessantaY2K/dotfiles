@@ -1,27 +1,30 @@
-// Niri configuration for CachyOS
-// For documentation and full reference, see: https://github.com/YaLTeR/niri/wiki
-
 // ────────────── Input Configuration ──────────────
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Input
+
+//QUICKSHELL \\//
+debug {
+    honor-xdg-activation-with-invalid-serial
+}
+
+layer-rule {
+    match namespace="^quickshell-overview$"
+    place-within-backdrop true
+}
+//QUICKSHELL //\\
 
 input {
     keyboard {
         xkb {
-            layout "br" // Use the German keyboard layout
+            layout "br"
         }
-        numlock // Enable numlock on startup
+        numlock
     }
-
-    //touchpad {
-       // tap // Enable tap-to-click
-      //  natural-scroll // Enable natural (macOS-style) scrolling
-    //}
 
     mouse {
         // off
         // natural-scroll
-        // accel-speed 0.1
-         accel-profile "flat"
+        // accel-speed 0.2
+        accel-profile "flat"
         // scroll-factor 1.0
         // scroll-factor vertical=1.0 horizontal=-2.0
         // scroll-method "no-scroll"
@@ -29,6 +32,12 @@ input {
         // scroll-button-lock
         // left-handed
         // middle-emulation
+    }
+
+    touchpad {
+        off
+        tap
+        natural-scroll
     }
 
     // focus-follows-mouse // Automatically focus windows under the mouse pointer
@@ -40,8 +49,8 @@ input {
 // You will have to remove "/-" and edit it before it takes effect.
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
 
-/- output "DP-1" {
-    mode "1920x1080@60.000" // Set resolution and refresh rate
+ output "HDMI-A-1" {
+    mode "1920x1080@60"
     scale 1 // No scaling (use 2 for HiDPI)
 }
 
@@ -52,21 +61,19 @@ binds {
     MOD+SHIFT+ESCAPE                     { show-hotkey-overlay; }
 
     // ─── Applications ───
-    MOD+RETURN                          hotkey-overlay-title="Open Terminal: kitty" { spawn-sh "kitty"; }
-    MOD+SPACE                           hotkey-overlay-title="Open App Launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
-    MOD+B                               hotkey-overlay-title="Open Browser: firefox" { spawn-sh "firefox"; }
-    MOD+ALT+L                           hotkey-overlay-title="Lock Screen: swaylock" { spawn-sh "qs -c noctalia-shell ipc call lockScreen toggle"; }
+    MOD+RETURN                          hotkey-overlay-title="Open kitty" { spawn-sh "kitty"; }
+    MOD+SPACE                           hotkey-overlay-title="Open qs launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
+    MOD+B                               hotkey-overlay-title="Open firefox" { spawn-sh "firefox"; }
+    MOD+ALT+L                           hotkey-overlay-title="Lock screen" { spawn-sh "swaylock"; }
     
     // Please choose your own file manager
-    MOD+E                             hotkey-overlay-title="File Manager: Nautilus" { spawn-sh "nautilus"; }
+    MOD+E                             hotkey-overlay-title="File Manager" { spawn-sh "nautilus"; }
 
     // ─── Audio Controls ───
-    // Example volume keys mappings for PipeWire & WirePlumber.
-    // The allow-when-locked=true property makes them work even when the session is locked.
     XF86AudioRaiseVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume increase"; }
     XF86AudioLowerVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume decrease"; }
-    XF86AudioMute                       allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume muteOutput"; }
-    XF86AudioMicMute                    allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume muteInput"; }
+    XF86AudioMute                       allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute                    allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
     XF86AudioNext                       allow-when-locked=true { spawn-sh "playerctl next"; }
     XF86AudioPause                      allow-when-locked=true { spawn-sh "playerctl play-pause"; }
     XF86AudioPlay                       allow-when-locked=true { spawn-sh "playerctl play-pause"; }
@@ -161,9 +168,9 @@ binds {
     MOD+W                               { toggle-column-tabbed-display; }
 
     // ─── Screenshots ───
-    CTRL+SHIFT+1                        { screenshot; }
-    CTRL+SHIFT+2                        { screenshot-screen; }
-    CTRL+SHIFT+3                        { screenshot-window; }
+    MOD+SHIFT+S                        { screenshot; }
+    // CTRL+SHIFT+2                        { screenshot-screen; }
+    // CTRL+SHIFT+3                        { screenshot-window; }
 
     // ─── Emergency Escape Key ───
     // Use this when a fullscreen app blocks your keybinds.
@@ -180,9 +187,9 @@ binds {
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous#spawn-sh-at-startup
 
     spawn-sh-at-startup "/usr/lib/polkit-kde-authentication-agent-1 &" // Polkit
-    // spawn-sh-at-startup "swww-daemon" // Wallpaper daemon
-    // spawn-sh-at-startup "swww img /usr/share/wallpapers/cachyos-wallpapers/limine-splash.png" // Set wallpaper
-    spawn-sh-at-startup "qs -c noctalia-shell" // Launch noctalia shell
+    spawn-sh-at-startup "swww-daemon" // Wallpaper daemon
+    spawn-sh-at-startup "swww img /home/ses/Pictures/Wallpapers/yellow_kyoto.jpg" // Set wallpaper
+    spawn-sh-at-startup "qs -c noctalia-shell" // Launch noctalia-shell
 
     prefer-no-csd // Disable program decorations
     screenshot-path null // Disable screenshot saving
@@ -191,7 +198,7 @@ binds {
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
 
     layout {
-        gaps 4 // Gap between windows
+        gaps 6 // Gap between windows
         center-focused-column "never" // Don’t auto-center focused column
 
         preset-column-widths {
@@ -202,7 +209,7 @@ binds {
 
         focus-ring {
             width 1
-            active-color "#00ac89"
+            active-color "#000000"
             inactive-color "#505050"
         }
 
@@ -260,17 +267,18 @@ binds {
     }
 
     window-rule {
-        geometry-corner-radius 20 // Set every window radius to 20
+        geometry-corner-radius 10 // Set every window radius to 10
         clip-to-geometry true
     }
 
-    debug {
-        honor-xdg-activation-with-invalid-serial
+    window-rule {
+        match app-id="firefox"
+        open-maximized true
     }
 
-    layer-rule {
-        match namespace="^quickshell-overview$"
-        place-within-backdrop true
+    window-rule {
+        match app-id="thunderbird"
+        open-maximized true
     }
 
 // ────────────── Environment Variables ──────────────
