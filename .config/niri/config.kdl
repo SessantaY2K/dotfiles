@@ -1,16 +1,8 @@
+// Niri configuration for CachyOS
+// For documentation and full reference, see: https://github.com/YaLTeR/niri/wiki
+
 // ────────────── Input Configuration ──────────────
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Input
-
-//QUICKSHELL \\//
-debug {
-    honor-xdg-activation-with-invalid-serial
-}
-
-layer-rule {
-    match namespace="^quickshell-overview$"
-    place-within-backdrop true
-}
-//QUICKSHELL //\\
 
 input {
     keyboard {
@@ -49,7 +41,7 @@ input {
 // You will have to remove "/-" and edit it before it takes effect.
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
 
- output "HDMI-A-1" {
+output "HDMI-A-1" {
     mode "1920x1080@60"
     scale 1 // No scaling (use 2 for HiDPI)
 }
@@ -61,17 +53,19 @@ binds {
     MOD+SHIFT+ESCAPE                     { show-hotkey-overlay; }
 
     // ─── Applications ───
-    MOD+RETURN                          hotkey-overlay-title="Open kitty" { spawn-sh "kitty"; }
-    MOD+SPACE                           hotkey-overlay-title="Open qs launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
-    MOD+B                               hotkey-overlay-title="Open firefox" { spawn-sh "firefox"; }
-    MOD+ALT+L                           hotkey-overlay-title="Lock screen" { spawn-sh "swaylock"; }
+    MOD+RETURN                          hotkey-overlay-title="Open Terminal: kitty" { spawn-sh "kitty"; }
+    MOD+SPACE                           hotkey-overlay-title="Open App Launcher: wofi" { spawn-sh "wofi"; }
+    MOD+B                               hotkey-overlay-title="Open Browser: firefox" { spawn-sh "firefox"; }
+    MOD+ALT+L                           hotkey-overlay-title="Lock Screen: swaylock" { spawn-sh "swaylock"; }
     
     // Please choose your own file manager
-    MOD+E                             hotkey-overlay-title="File Manager" { spawn-sh "nautilus"; }
+    MOD+E                             hotkey-overlay-title="File Manager: Nautilus" { spawn-sh "nautilus"; }
 
     // ─── Audio Controls ───
-    XF86AudioRaiseVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume increase"; }
-    XF86AudioLowerVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume decrease"; }
+    // Example volume keys mappings for PipeWire & WirePlumber.
+    // The allow-when-locked=true property makes them work even when the session is locked.
+    XF86AudioRaiseVolume                allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }
+    XF86AudioLowerVolume                allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
     XF86AudioMute                       allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
     XF86AudioMicMute                    allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
     XF86AudioNext                       allow-when-locked=true { spawn-sh "playerctl next"; }
@@ -188,8 +182,8 @@ binds {
 
     spawn-sh-at-startup "/usr/lib/polkit-kde-authentication-agent-1 &" // Polkit
     spawn-sh-at-startup "swww-daemon" // Wallpaper daemon
-    spawn-sh-at-startup "swww img /home/ses/Pictures/Wallpapers/yellow_kyoto.jpg" // Set wallpaper
-    spawn-sh-at-startup "qs -c noctalia-shell" // Launch noctalia-shell
+    spawn-sh-at-startup "swww img /home/ses/Pictures/Wallpapers/bunny.png" // Set wallpaper
+    spawn-sh-at-startup "waybar" // Launch waybar
 
     prefer-no-csd // Disable program decorations
     screenshot-path null // Disable screenshot saving
@@ -197,89 +191,86 @@ binds {
 // ────────────── Layout Settings ──────────────
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
 
-    layout {
-        gaps 6 // Gap between windows
-        center-focused-column "never" // Don’t auto-center focused column
+layout {
+    gaps 6 // Gap between windows
+    center-focused-column "never" // Don’t auto-center focused column
 
-        preset-column-widths {
-            proportion 0.33333
-            proportion 0.5
-            proportion 0.66667
-        }
-
-        focus-ring {
-            width 1
-            active-color "#000000"
-            inactive-color "#505050"
-        }
-
-        shadow {
-            softness 30
-            spread 5
-            offset x=0 y=5
-            color "#0007"
-        }
-
-        struts {}
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
     }
+
+    focus-ring {
+        width 1
+        active-color "#000000"
+        inactive-color "#505050"
+    }
+
+    shadow {
+        softness 30
+        spread 5
+        offset x=0 y=5
+        color "#0007"
+    }
+
+    struts {}
+}
 
 // ────────────── Animation Settings ──────────────
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Animations
-    animations {
-        workspace-switch {
-            spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
-        }
-        window-open {
-            duration-ms 200
-            curve "ease-out-quad"
-        }
-        window-close {
-            duration-ms 200
-            curve "ease-out-cubic"
-        }
-        horizontal-view-movement {
-            spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
-        }
-        window-movement {
-            spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
-        }
-        window-resize {
-            spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
-        }
-        config-notification-open-close {
-            spring damping-ratio=0.6 stiffness=1200 epsilon=0.001
-        }
-        screenshot-ui-open {
-            duration-ms 300
-            curve "ease-out-quad"
-        }
-        overview-open-close {
-            spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
-        }
+animations {
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
     }
+    window-open {
+        duration-ms 200
+        curve "ease-out-quad"
+    }
+    window-close {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+    horizontal-view-movement {
+        spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+    }
+    window-movement {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+    window-resize {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+    config-notification-open-close {
+        spring damping-ratio=0.6 stiffness=1200 epsilon=0.001
+    }
+    screenshot-ui-open {
+        duration-ms 300
+        curve "ease-out-quad"
+    }
+    overview-open-close {
+        spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+    }
+}
+
 
 // ────────────── Window Rules ──────────────
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Window-Rules
 
-    window-rule {
-        match app-id=r#"firefox$"# title="^Picture-in-Picture$"
-        open-floating true // Always float Firefox PiP windows
-    }
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true // Always float Firefox PiP windows
+}
 
-    window-rule {
-        geometry-corner-radius 10 // Set every window radius to 10
-        clip-to-geometry true
-    }
+window-rule {
+    geometry-corner-radius 10 // Set every window radius to 10
+    clip-to-geometry true
+}
 
-    window-rule {
-        match app-id="firefox"
-        open-maximized true
-    }
+window-rule {
+    match app-id="firefox"
+    open-maximized true
+}
 
-    window-rule {
-        match app-id="thunderbird"
-        open-maximized true
-    }
 
 // ────────────── Environment Variables ──────────────
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous#environment
